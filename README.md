@@ -4,18 +4,29 @@ This repo contains the scraper code for the Unobtainium project stock alert bot.
 
 public/ is what gets published to the volunteers who run the scraper.
 
-		It contains the obfuscated scraper code in unobtainiumCrawler.js
+		unobtainiumCrawler.js
+		
+			obfuscated scraper code. this is what actually gets released to the scrapers.
 
-		The list of products scanned is in productList.json
+		productList.json
+		
+			list of products, URLs, MSRPs, etc to be scraped.
 
-		Products that can be scraped in batches are grouped as such in batchList.json
+		batchList.json
+		
+			Products that can be checked in batches because they are listed on the same page are grouped together here.
 
 
 scripts/ is where development work happens. 
 
-		unobtainiumCrawler.js contains most of the code you'll be interested in. 
+		unobtainiumCrawler.js 
+			
+			contains most of the code you'll be interested in. 
+			
+			probably needs to be split up into multiple files.
 
 		The rest of the files in this folder are to help us in publishing releases or product list management.
+		You can probably just ignore them.
 
 
 Note that this repo will look drastically different over the next week or two as we finish preparing the code for public testing and contributions.

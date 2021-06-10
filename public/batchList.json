@@ -1,0 +1,500 @@
+[
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601361654&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rtx3060"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601357247&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~NVIDIA%20GeForce%20RTX%203080",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.zotacstore.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.zotacstore.com",
+        "productName": "rtx3060"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rtx3060"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "https://www.evga.com/products/productlist.aspx?type=0&family=GeForce+30+Series+Family&chipset=RTX+3080&associatecode=DL17C9K9D2DH7FL",
+        "country": "US",
+        "hostname": "www.evga.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.samsclub.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.officedepot.com",
+        "productName": "rtx3080"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601357250&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~NVIDIA%20GeForce%20RTX%203070",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.zotacstore.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "https://www.evga.com/products/productlist.aspx?type=0&family=GeForce+30+Series+Family&chipset=RTX+3070&associatecode=DL17C9K9D2DH7FL",
+        "country": "US",
+        "hostname": "www.evga.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.officedepot.com",
+        "productName": "rtx3070"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601359427&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rx6800"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rx6800"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~AMD%20Radeon%20RX%206800",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rx6800"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007671%2050001028%20601359163&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "r5_5600x"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/playstation-5/ps5-consoles/pcmcat1587395025973.c?id=pcmcat1587395025973",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/PS5-Systems/SubCategory/ID-3762&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.walmart.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.gamestop.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.costco.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "direct.playstation.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.target.com",
+        "productName": "PS5"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.gamestop.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.target.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.walmart.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/xbox-series-x-and-s/xbox-series-x-and-s-consoles/pcmcat1586900952752.c?id=pcmcat1586900952752",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/Xbox-Series-X-S-System/SubCategory/ID-3759",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.costco.com",
+        "productName": "XSS"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~NVIDIA%20GeForce%20RTX%203090",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "https://www.evga.com/products/productlist.aspx?type=0&family=GeForce+30+Series+Family&chipset=RTX+3090&associatecode=DL17C9K9D2DH7FL",
+        "country": "US",
+        "hostname": "www.evga.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.zotacstore.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.samsclub.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601357248&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.officedepot.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rtx3090"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/xbox-series-x-and-s/xbox-series-x-and-s-consoles/pcmcat1586900952752.c?id=pcmcat1586900952752",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/Xbox-Series-X-S-System/SubCategory/ID-3759",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.costco.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.target.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.gamestop.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.walmart.com",
+        "productName": "XSX"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "psu"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?PageSize=96&N=100007657%20600014000%20600479294%20600479295%20600479296%204814%2050001459%2050002031%2050014581%2050085693%20600037998%20600112163",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "psu"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.staples.com",
+        "productName": "psu"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "r9_5950x"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007671%2050001028%20601359163&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "r9_5950x"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "r9_5950x"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.staples.com",
+        "productName": "r9_5950x"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601359422&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rx6800xt"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rx6800xt"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~AMD%20Radeon%20RX%206800%20XT",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rx6800xt"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007671%2050001028%20601359163&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "r7_5800x"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.amazon.com",
+        "productName": "r7_5800x"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007671%2050001028%20601359163&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "r9_5900x"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.staples.com",
+        "productName": "r9_5900x"
+    },
+    {
+        "batchUrl": "https://www.bestbuy.com/site/computer-cards-components/video-graphics-cards/abcat0507002.c?id=abcat0507002&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~NVIDIA%20GeForce%20RTX%203060%20Ti",
+        "country": "US",
+        "hostname": "www.bestbuy.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "https://www.evga.com/products/productlist.aspx?type=0&family=GeForce+30+Series+Family&chipset=RTX+3060+Ti",
+        "country": "US",
+        "hostname": "www.evga.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601359415&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.zotacstore.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rtx3060"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.officedepot.com",
+        "productName": "rtx3060ti"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601359957&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rx6900xt"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?N=100007709%20601362404&PageSize=96",
+        "country": "US",
+        "hostname": "www.newegg.com",
+        "productName": "rx6700xt"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.bhphotovideo.com",
+        "productName": "rx6700xt"
+    },
+    {
+        "batchUrl": "",
+        "country": "US",
+        "hostname": "www.adorama.com",
+        "productName": "rx6700xt"
+    },
+    {
+        "batchUrl": "https://www.newegg.com/p/pl?PageSize=96&N=50008476%20100007611%20601349177%208000%20600083963%20600528730&Manufactory=8476",
+        "country": "test",
+        "hostname": "www.newegg.com",
+        "productName": "test"
+    }
+]

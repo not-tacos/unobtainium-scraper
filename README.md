@@ -16,3 +16,7 @@ scripts/ is where development work happens.
 		unobtainiumCrawler.js contains most of the code you'll be interested in. 
 
 		The rest of the files in this folder are to help us in publishing releases or product list management.
+
+
+Note that this repo will look drastically different over the next week or two as we finish preparing the code for public testing and contributions.
+I've put this up now so people can get familiar with the code before we all start working on it.

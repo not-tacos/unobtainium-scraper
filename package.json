@@ -1,0 +1,31 @@
+{
+  "name": "unobtainium-scraper",
+  "version": "1.0.0",
+  "description": "This repo contains the scraper code for the Unobtainium project stock alert bot. (https://unobtainium.app)",
+  "main": "scripts/unobtainiumCrawler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:crawler:local": "node scripts/testCrawler.js | bunyan",
+    "start": "npm run test:crawler:local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/not-tacos/unobtainium-scraper.git"
+  },
+  "author": "Trey Cozic <jlcozic3@me.com>, Buddy Delaune <bcdel89@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/not-tacos/unobtainium-scraper/issues"
+  },
+  "homepage": "https://github.com/not-tacos/unobtainium-scraper#readme",
+  "dependencies": {
+    "bunyan": "^1.8.15",
+    "cheerio": "^1.0.0-rc.10",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "got": "^11.8.2",
+    "lodash": "^4.17.21",
+    "require-from-url": "^3.1.3",
+    "user-agents": "^1.0.679"
+  }
+}

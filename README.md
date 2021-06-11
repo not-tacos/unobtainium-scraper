@@ -1,12 +1,9 @@
 # unobtainium-scraper
 This repo contains the scraper code for the Unobtainium project stock alert bot. (https://unobtainium.app)
 
+## File Structure
 
 public/ is what gets published to the volunteers who run the scraper.
-
-		unobtainiumCrawler.js
-		
-			obfuscated scraper code. this is what actually gets released to the scrapers.
 
 		productList.json
 		
@@ -23,11 +20,29 @@ scripts/ is where development work happens.
 			
 			contains most of the code you'll be interested in. 
 			
-			probably needs to be split up into multiple files.
 
-		The rest of the files in this folder are to help us in publishing releases or product list management.
-		You can probably just ignore them.
+## Getting Started
 
+Synchronize your node environment
+```bash 
+$ nvm use
+```
 
-Note that this repo will look drastically different over the next week or two as we finish preparing the code for public testing and contributions.
-I've put this up now so people can get familiar with the code before we all start working on it.
+Install node dependencies
+```bash 
+$ npm install
+```
+
+Start the crawler code
+```bash 
+$ npm start
+```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+See [License.md].
+
+[license.md]: https://github.com/not-tacos/unobtainium-scraper/blob/main/LICENSE
+

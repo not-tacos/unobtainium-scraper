@@ -1,5 +1,5 @@
 'use strict';
-const CRAWLER_VERSION = 92;
+const CRAWLER_VERSION = 1;
 
 const got = require('got');
 const _ = require('lodash');
@@ -771,10 +771,10 @@ module.exports = (() => {
       return 0;
       const $ = cheerio.load(html);
       const aTags = $('script[type="application/ld+json"]').find('a').toArray();
-  
+
       // Look through all the <a> tags and find the first one that matches our check url
     return (aTags.includes('"availability":"http://schema.org/InStock"'));
-  }; 
+  };
   const containerIsInStockNewegg = (html) => {
     return (html && (html.includes('Add to cart') || html.includes('View Details')) && !html.includes('<span class="message-title">Not available. </span>'));
   };

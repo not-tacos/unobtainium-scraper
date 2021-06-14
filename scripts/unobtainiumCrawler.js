@@ -5,6 +5,7 @@ const got = require('got');
 const _ = require('lodash');
 const cheerio = require('cheerio');
 const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
+const { uuidv4, parseNumberEN } = require("./util")
 
 let fs = null;
 let bunyan = null;
@@ -325,14 +326,6 @@ module.exports = (() => {
     return blm;
   };
 
-  const uuidv4 = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      let r = Math.random() * 16 | 0;
-      let v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  };
-
   const createLogger = (options) => {
     if (bunyan) return new bunyan(options);
     return logger;
@@ -347,13 +340,6 @@ module.exports = (() => {
       logger.error('writeHtmlToFile() ERROR: ', e);
     }
   };
-
-  // grabs numbers without commas
-  function parseNumberEN(value) {
-    const cleanPattern = new RegExp('[^-+0-9^\.]', 'g');
-    const cleaned = value.replace(cleanPattern, '');
-    return parseFloat(cleaned);
-  }
 
   /**
    * Helper function to resolve promise after a delay in MS

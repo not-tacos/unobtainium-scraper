@@ -24,5 +24,6 @@ scratch/
 tests/
 keys/
 *.bak
+dist
 
 public/productListTest.json

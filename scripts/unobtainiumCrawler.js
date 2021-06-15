@@ -1,15 +1,14 @@
 'use strict';
-
-import { containerIsInStockNewegg, genericIsInStockEnglish } from "./sites";
-
 const CRAWLER_VERSION = 1;
 
-const got = require('got');
-const _ = require('lodash');
-const cheerio = require('cheerio');
+import got from 'got';
+import _ from 'lodash';
+import cheerio from 'cheerio';
+
+import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
+import { parseNumberEN, uuidv4 } from "./util";
+
 const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
-const { uuidv4, parseNumberEN } = require("./util");
-const { isInStockSiteDictionary, userAgentDictionary, batchHostTimeouts, HostTimeouts } = require("./sites");
 
 let fs = null;
 let bunyan = null;

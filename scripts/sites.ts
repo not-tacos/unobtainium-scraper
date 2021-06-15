@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 // ================================================
 // isInStock
 // ================================================
-const genericIsInStockEnglish = (html) => (html && html.toLowerCase().includes('in stock') && !html.toLowerCase().includes('not in stock'));
+export const genericIsInStockEnglish = (html) => (html && html.toLowerCase().includes('in stock') && !html.toLowerCase().includes('not in stock'));
 const genericIsInStockSpanish = (html) => !(html && html.toLowerCase().includes('agotado'));
 const siteIsInStockBhPhotoVideo = (html) => (html && (html.includes('addToCartButton') && html.includes('addToCartSection') && !html.includes('Notify When Available')));
 const siteIsInStockBestBuy = (html) => (html && html.includes('"availability":"http://schema.org/InStock"'));
@@ -24,7 +24,7 @@ const siteIsInStockNewegg = (html) => {
     // Look through all the <a> tags and find the first one that matches our check url
   return (aTags.includes('"availability":"http://schema.org/InStock"'));
 };
-const containerIsInStockNewegg = (html) => {
+export const containerIsInStockNewegg = (html) => {
   return (html && (html.includes('Add to cart') || html.includes('View Details')) && !html.includes('<span class="message-title">Not available. </span>'));
 };
 const siteIsInStockWalmart = (html) => (html && (html.includes('button prod-ProductCTA--primary prod-ProductCTA--server display-inline-block button--primary')));

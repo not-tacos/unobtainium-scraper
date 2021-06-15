@@ -1,4 +1,7 @@
 'use strict';
+
+import { containerIsInStockNewegg, genericIsInStockEnglish } from "./sites";
+
 const CRAWLER_VERSION = 1;
 
 const got = require('got');

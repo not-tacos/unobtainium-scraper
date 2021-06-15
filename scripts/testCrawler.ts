@@ -1,8 +1,8 @@
 'use strict';
-const got = require('got');
+
 const _ = require('dotenv').config();
-const {filter} = require('lodash');
-const express = require('express');
+import express from 'express';
+
 const app = express();
 
 app.get('/api/Sites/getProductList', async (req, res) => res.redirect(301, 'https://unobtainium.app/api/Sites/getProductList'));

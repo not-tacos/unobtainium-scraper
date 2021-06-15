@@ -33,6 +33,11 @@ Install node dependencies
 $ npm install
 ```
 
+Build the crawler code
+```bash
+$ npm run build
+```
+
 Start the crawler code
 ```bash 
 $ npm start

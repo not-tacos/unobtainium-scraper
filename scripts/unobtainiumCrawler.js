@@ -55,12 +55,13 @@ module.exports = (() => {
   let apiClient = null;
   let crawlClient = null;
 
-  let logger = (() => {
-    this.trace = this.debug = () => {
+  let logger = {
+    trace: _.noop,
+    debug: _.noop,
+    info: console.log,
+    warn: console.log,
+    error: console.log,
     };
-    this.info = this.warn = this.error = console.log;
-    return this;
-  })();
 
   const loggerOptions = {
     name: 'unobtainiumCrawler',
@@ -107,7 +108,7 @@ module.exports = (() => {
     batchList = batchList ? (await Promise.resolve(batchList)) : await apiClient.retrieveBatchList();
     logger.info('init() - loaded product list: ', productList.length);
     logger.info('init() - loaded batch list: ', batchList.length);
-    buildDictionary();
+    productDictionary = buildDictionary(productList);
     buildBatchDictionary();
     logger.info('init() - loaded product dictionary: ', productDictionary.length);
 
@@ -390,6 +391,20 @@ module.exports = (() => {
     };
   };
 
+  const buildDictionary = (productList) =>
+    // NOTE: now that we retrieve the list from the server sorted by oldest first we don't need to shuffle the list
+    // productDictionary = _.shuffle(_.map(productList, product => {
+    productList.map((product, index) => {
+      const hostname = new URL(product.url).hostname;
+      return {
+        index,
+        hostname,
+        productname: product.productName,
+        product: product,
+        parse: buildParser(product, hostname),
+      };
+    });
+
   /**
    * buildBatchParser()
    * @param batch
@@ -540,50 +555,36 @@ module.exports = (() => {
    *     ]
    * }
    */
-  const buildDictionary = () => {
-    let uniqIndex = 0;
-
-    // NOTE: now that we retrieve the list from the server sorted by oldest first we don't need to shuffle the list
-    // productDictionary = _.shuffle(_.map(productList, product => {
-
-    productDictionary = (_.map(productList, product => {
-      return new (function() {
-        uniqIndex += 1;
-        this.index = uniqIndex;
-        this.hostname = (new URL(product.url).hostname);
-        this.productname = product.productName;
-        this.product = product;
-        this.parse = buildParser(product, this.hostname);
-      })();
-    }));
-  };
-
   const buildBatchDictionary = () => {
-    let uniqIndex = 0;
-
-    batchDictionary = (batchList.map(batch => {
-      return new (function() {
-        uniqIndex += 1;
-        this.index = uniqIndex;
-        this.batchUrl = batch.batchUrl;
-        this.country = batch.country;
-        this.hostname = batch.hostname;
-        this.productName = batch.productName;
-
-        const checkSites = _.filter(productList, site => {
+    batchDictionary = batchList
+      .map((batch, index) => {
+        const checkUrls = productList
+          .filter((site) => {
           const productName = site.productName;
-          const hostName = (new URL(site.url).hostname);
-          return (this.productName === productName && this.hostname === hostName);
-        });
+            const hostName = new URL(site.url).hostname;
+            return (
+              batch.productName === productName && batch.hostname === hostName
+            );
+          })
+          .map((site) => site.url);
 
-        this.checkUrls = checkSites.map(site => site.url);
-        this.parse = buildBatchParser(this);
-      })();
-    }));
-    batchDictionary = _.filter(batchDictionary, bItem => bItem.batchUrl && bItem.checkUrls.length);
+        const record = {
+          index: index,
+          batchUrl: batch.batchUrl,
+          country: batch.country,
+          hostname: batch.hostname,
+          productName: batch.productName,
+          checkUrls,
+        };
+
+        return { ...record, parse: buildBatchParser(record) };
+      })
+      .filter((bItem) => bItem.batchUrl && bItem.checkUrls.length);
 
     // TODO: take out when we get EVGA working, but for now we only get forbidden
-    batchDictionary = _.filter(batchDictionary, bItem => bItem.hostname !== 'www.evga.com');
+    batchDictionary = batchDictionary.filter(
+      (bItem) => bItem.hostname !== "www.evga.com"
+    );
   };
 
   // z.getInfo = async (product) => {

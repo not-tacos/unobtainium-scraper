@@ -5,7 +5,7 @@
   "main": "dist/scripts/unobtainiumCrawler.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "test:crawler:local": "node dist/scripts/testCrawler.js | bunyan",
     "start": "npm run test:crawler:local"
   },

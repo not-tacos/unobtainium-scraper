@@ -7,7 +7,7 @@ export type BlackListItem = {
   expiry: number;
 };
 
-const blackListHostDictionary = {
+export const blackListHostDictionary = {
   default: 8 * 60 * 60 * 1000 + 1000 * 60, // 8 hours and 1 minute in ms
   // default: (1000 * 30), // TESTING: 30 seconds
 };

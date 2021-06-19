@@ -1,7 +1,6 @@
 'use strict';
 const CRAWLER_VERSION = 1;
 
-import got from 'got';
 import _ from 'lodash';
 import cheerio from 'cheerio';
 
@@ -38,7 +37,6 @@ try {
  */
 
 
-const blackListStrikeDictionary = {};
 
 module.exports = (() => {
   // ================================================
@@ -98,7 +96,14 @@ module.exports = (() => {
     logger.info('init() - CRAWLER_VERSION: ', CRAWLER_VERSION);
     logger.info('init() - ================================================');
 
-    apiClient = new ApiClient(_apiUrl,logger,guid,runOptions,CRAWLER_VERSION);
+    apiClient = new ApiClient(
+      _apiUrl,
+      logger,
+      guid,
+      runOptions,
+      CRAWLER_VERSION,
+      blackList
+    );
     crawlClient = new CrawlClient();
 
     productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
@@ -286,47 +291,6 @@ module.exports = (() => {
   const delay = (timeoutInMs) => new Promise(resolve => setTimeout(resolve, timeoutInMs));
 
 
-  /**
-   * notify the server of stock changes
-   * @param parsedResults {object}
-   * @param success {boolean} - if the update was a success (not becuase of an error, blacklist, etc.)
-   * @param html {string} - if the server responds that this update caused a stock hit them upload the related html
-   * @return Promise<response>
-   */
-  const notifyServer = async (parsedResults, success = false, html) => {
-    parsedResults.version = CRAWLER_VERSION;
-
-    try {
-      if (success && parsedResults.siteName) blackListStrikeDictionary[parsedResults.siteName] = 0;
-      const gotResults = await got.post(apiUrl + 'api/Sites/setAvailability', {json: parsedResults});
-      const results = JSON.parse(gotResults.body);
-      if (results && results.causedHit) {
-        console.log('notifyServer() - CAUSED STOCK HIT');
-        got.post(apiUrl + 'api/ScraperStocks/' + results.causedHit + '/submitHtml', {json: {html}});
-      }
-    } catch (e) {
-      logger.error('notifyServer() ERROR', e);
-    }
-  };
-
-  const notifyServerOfError = async (scraperError) => {
-    try {
-      scraperError.crawlerId = guid;
-      scraperError.crawlerVersion = CRAWLER_VERSION;
-      got.post(apiUrl + 'api/ScraperErrors', {json: scraperError});
-
-      if (scraperError.hostname) {
-        const host = scraperError.hostname;
-        blackListStrikeDictionary[host] = (blackListStrikeDictionary[host] || 0) + 1;
-        logger.info('notifyServerOfError() - ', host, 'has', blackListStrikeDictionary[host], 'strikes');
-        if (blackListStrikeDictionary[host] >= 3) blackList.add(host);
-      }
-
-    } catch (e) {
-      logger.error('notifyServerOfError() ERROR', e);
-    }
-  };
-
 
   /**
    * builds the parser that will query the product url and return an object of related product info
@@ -347,7 +311,7 @@ module.exports = (() => {
             renderTime: new Date().getTime(),
           };
 
-          notifyServer(updateInfo);
+          apiClient.notifyServer(updateInfo);
           return logger.warn('ProductParser() - TEMPORARILY BLACKLISTED: ' + siteName + '-' + product.productName);
         }
 
@@ -383,12 +347,12 @@ module.exports = (() => {
           // });
         }
 
-        notifyServer(productInfo, true, body);
+        apiClient.notifyServer(productInfo, true, body);
 
         return productInfo;
       } catch (e) {
 
-        notifyServer({
+        apiClient.notifyServer({
           productName: product.productName,
           url: product.url,
           price: product.price,
@@ -396,7 +360,7 @@ module.exports = (() => {
           renderTime: new Date().getTime(),
         });
 
-        notifyServerOfError({
+        apiClient.notifyServerOfError({
           hostname: siteName,
           productname: product.productName,
           url: product.url,
@@ -456,7 +420,7 @@ module.exports = (() => {
             country: batch.country,
             renderTime: new Date().getTime(),
           };
-          notifyServer(updateInfo);
+          apiClient.notifyServer(updateInfo);
           return logger.warn('BatchParser() - TEMPORARILY BLACKLISTED: ' + batch.hostname + '-' + batch.productName);
         }
 
@@ -516,13 +480,13 @@ module.exports = (() => {
 
             logger.info(productStr);
 
-            notifyServer(productInfo, true, body);
+            apiClient.notifyServer(productInfo, true, body);
 
             return productInfo;
 
           } catch (e) {
 
-            notifyServer({
+            apiClient.notifyServer({
               productName: productName,
               url: url,
               price: product.price,
@@ -530,7 +494,7 @@ module.exports = (() => {
               renderTime: new Date().getTime(),
             });
 
-            notifyServerOfError({
+            apiClient.notifyServerOfError({
               hostname,
               productname: product.productName,
               url,

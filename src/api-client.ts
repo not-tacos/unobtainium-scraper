@@ -2,6 +2,8 @@ import got from "got";
 import { CrawlerBlacklist } from "./blacklist";
 import { Logger } from "./types";
 
+import { uuidv4 } from "../scripts/util";
+
 type ParsedResults = {
   siteName?: string;
   version?: string;
@@ -15,14 +17,17 @@ type ScraperError = {
 
 const blackListStrikeDictionary = {};
 export class ApiClient {
+  private guid: string;
+
   constructor(
     private apiUrl: string,
     private logger: Logger,
-    private guid: string,
     private runOptions,
     private crawler_version,
     private blacklist: CrawlerBlacklist
-  ) {}
+  ) {
+    this.guid = uuidv4();
+  }
 
   /**
    * retrive the product list from the server
@@ -59,7 +64,7 @@ export class ApiClient {
    */
   notifyServer = async (
     parsedResults: ParsedResults,
-    success = false,
+    success: boolean = false,
     html: string
   ) => {
     parsedResults.version = this.crawler_version;
@@ -100,11 +105,7 @@ export class ApiClient {
         blackListStrikeDictionary[host] =
           (blackListStrikeDictionary[host] || 0) + 1;
         this.logger.info(
-          "notifyServerOfError() - ",
-          host,
-          "has",
-          blackListStrikeDictionary[host],
-          "strikes"
+          `notifyServerOfError() - ${host} has ${blackListStrikeDictionary[host]} strikes`
         );
         if (blackListStrikeDictionary[host] >= 3) {
           this.blacklist.add(host);

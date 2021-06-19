@@ -5,14 +5,13 @@ import _ from 'lodash';
 import cheerio from 'cheerio';
 
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
-import { parseNumberEN, uuidv4 } from "./util";
+import { parseNumberEN } from "./util";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';
 
 let fs = null;
 let bunyan = null;
-let guid = null;
 
 try {
   bunyan = require('bunyan');
@@ -81,7 +80,6 @@ module.exports = (() => {
     blackList = createCrawlerBlackList(_blackList,logger);
     productList = _productList || null;
     batchList = _batchList || null;
-    guid = guid || uuidv4();
 
     logger = createLogger(loggerOptions);
 
@@ -99,7 +97,6 @@ module.exports = (() => {
     apiClient = new ApiClient(
       _apiUrl,
       logger,
-      guid,
       runOptions,
       CRAWLER_VERSION,
       blackList

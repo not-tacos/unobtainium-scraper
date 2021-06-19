@@ -9,8 +9,7 @@ import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, H
 import { parseNumberEN, uuidv4 } from "./util";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
-
-const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
+import { CrawlClient } from '../src/crawl-client';
 
 let fs = null;
 let bunyan = null;
@@ -57,6 +56,7 @@ module.exports = (() => {
   let runOptions = {};
   let batchTimers = {};
   let apiClient = null;
+  let crawlClient = null;
 
   let logger = (() => {
     this.trace = this.debug = () => {
@@ -99,6 +99,7 @@ module.exports = (() => {
     logger.info('init() - ================================================');
 
     apiClient = new ApiClient(_apiUrl);
+    crawlClient = new CrawlClient();
 
     productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
     batchList = batchList ? (await Promise.resolve(batchList)) : await apiClient.retrieveBatchList();
@@ -364,15 +365,12 @@ module.exports = (() => {
           return logger.warn('ProductParser() - TEMPORARILY BLACKLISTED: ' + siteName + '-' + product.productName);
         }
 
-        // TODO: randomize
-        // const ua = userAgent().toString();
-        const ua = userAgent.toString();
-        const html = await got(product.url, {
-          timeout: HostTimeouts[siteName],
-          headers: {'user-agent': userAgentDictionary[siteName] || ua},
-        });
+        const body = await crawlClient.get(
+          product.url,
+          HostTimeouts[siteName],
+          userAgentDictionary[siteName]
+        );
 
-        const body = html.body;
         const renderTime = new Date().getTime();
         const productName = product.productName;
         const country = product.country;
@@ -476,15 +474,12 @@ module.exports = (() => {
           return logger.warn('BatchParser() - TEMPORARILY BLACKLISTED: ' + batch.hostname + '-' + batch.productName);
         }
 
-        // TODO: randomize
-        // const ua = userAgent().toString();
-        const ua = userAgent.toString();
-        const html = await got(batch.batchUrl, {
-          timeout: HostTimeouts[batch.hostname],
-          headers: {'user-agent': userAgentDictionary[batch.hostname] || ua},
-        });
+        const body = await crawlClient.get(
+          batch.batchUrl,
+          HostTimeouts[batch.hostname],
+          userAgentDictionary[batch.hostname]
+        );
 
-        const body = html.body;
         const renderTime = new Date().getTime();
         const productName = batch.productName;
         const hostname = batch.hostname;

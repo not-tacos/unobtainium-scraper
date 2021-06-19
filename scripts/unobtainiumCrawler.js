@@ -5,7 +5,7 @@ import _ from 'lodash';
 import cheerio from 'cheerio';
 
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
-import { parseNumberEN } from "./util";
+import { parseNumberEN } from "../src/util";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';

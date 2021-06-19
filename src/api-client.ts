@@ -2,7 +2,7 @@ import got from "got";
 import { CrawlerBlacklist } from "./blacklist";
 import { Logger } from "./types";
 
-import { uuidv4 } from "../scripts/util";
+import { uuidv4 } from "./util";
 
 type ParsedResults = {
   siteName?: string;

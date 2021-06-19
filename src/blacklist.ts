@@ -13,27 +13,21 @@ export const blackListHostDictionary = {
 };
 
 export class CrawlerBlacklist {
-  private _items: BlackListItem[];
-  private _logger: Logger;
-
-  constructor(items: BlackListItem[], logger: Logger) {
-    this._items = items;
-    this._logger = logger;
-  }
+  constructor(private items: BlackListItem[], private logger: Logger) {}
 
   getExpiry(hostname: string) {
     const expiry =
       blackListHostDictionary[hostname] || blackListHostDictionary["default"];
-    this._logger.debug("blackList.getExpiry()", expiry);
+    this.logger.debug("blackList.getExpiry()", expiry);
     return expiry;
   }
 
   isBlacklisted(hostname: string) {
     const foundHost = !!_.find(
-      this._items,
+      this.items,
       (item) => item.hostname.toLowerCase() === hostname.toLowerCase()
     );
-    this._logger.debug("blackList.isBlacklisted()", foundHost);
+    this.logger.debug("blackList.isBlacklisted()", foundHost);
     return foundHost;
   }
 
@@ -42,19 +36,19 @@ export class CrawlerBlacklist {
       hostname,
       expiry: new Date().getTime() + this.getExpiry(hostname),
     };
-    this._items.push(blackListRecord);
-    this._logger.debug("blackList.add()", blackListRecord);
-    this._logger.warn("BLACKLISTING", hostname);
+    this.items.push(blackListRecord);
+    this.logger.debug("blackList.add()", blackListRecord);
+    this.logger.warn("BLACKLISTING", hostname);
     return blackListRecord;
   }
 
   process() {
     const filteredList = _.filter(
-      this._items,
+      this.items,
       (item) => new Date().getTime() < item.expiry
     );
-    this._logger.debug("blackList.process() ", this._items, filteredList);
-    this._items = filteredList;
+    this.logger.debug("blackList.process() ", this.items, filteredList);
+    this.items = filteredList;
     return this;
   }
 }

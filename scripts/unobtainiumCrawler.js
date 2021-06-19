@@ -98,7 +98,7 @@ module.exports = (() => {
     logger.info('init() - CRAWLER_VERSION: ', CRAWLER_VERSION);
     logger.info('init() - ================================================');
 
-    apiClient = new ApiClient(_apiUrl);
+    apiClient = new ApiClient(_apiUrl,logger,guid,runOptions,CRAWLER_VERSION);
     crawlClient = new CrawlClient();
 
     productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
@@ -185,7 +185,7 @@ module.exports = (() => {
       };
 
       const startExecution = () => {
-        pingServer();
+        apiClient.pingServer()
 
         if (queue.length) {
 
@@ -327,20 +327,6 @@ module.exports = (() => {
     }
   };
 
-  const pingServer = async () => {
-    try {
-      logger.debug('ping [' + CRAWLER_VERSION + ']', guid);
-      got.post(apiUrl + 'api/Crawlers/ping', {
-        json: {
-          id: guid,
-          configuration: runOptions,
-          version: CRAWLER_VERSION,
-        },
-      });
-    } catch (e) {
-      logger.error('notifyServerOfError() ERROR', e);
-    }
-  };
 
   /**
    * builds the parser that will query the product url and return an object of related product info

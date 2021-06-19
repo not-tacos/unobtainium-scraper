@@ -8,6 +8,7 @@ import cheerio from 'cheerio';
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
 import { parseNumberEN, uuidv4 } from "./util";
 import { createCrawlerBlackList } from '../src/blacklist';
+import { ApiClient } from '../src/api-client';
 
 const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
 
@@ -55,6 +56,7 @@ module.exports = (() => {
   let blackList = [];
   let runOptions = {};
   let batchTimers = {};
+  let apiClient = null;
 
   let logger = (() => {
     this.trace = this.debug = () => {
@@ -96,8 +98,10 @@ module.exports = (() => {
     logger.info('init() - CRAWLER_VERSION: ', CRAWLER_VERSION);
     logger.info('init() - ================================================');
 
-    productList = productList ? (await Promise.resolve(productList)) : await retrieveNewProductList();
-    batchList = batchList ? (await Promise.resolve(batchList)) : await retrieveBatchList();
+    apiClient = new ApiClient(_apiUrl);
+
+    productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
+    batchList = batchList ? (await Promise.resolve(batchList)) : await apiClient.retrieveBatchList();
     logger.info('init() - loaded product list: ', productList.length);
     logger.info('init() - loaded batch list: ', batchList.length);
     buildDictionary();
@@ -280,13 +284,6 @@ module.exports = (() => {
    */
   const delay = (timeoutInMs) => new Promise(resolve => setTimeout(resolve, timeoutInMs));
 
-  /**
-   * retrive the product list from the server
-   * @return JSON list of Products
-   */
-  const retrieveProductList = async () => JSON.parse((await got(apiUrl + 'public/productList.json')).body);
-  const retrieveNewProductList = async () => JSON.parse((await got(apiUrl + 'api/Sites/getProductList')).body);
-  const retrieveBatchList = async () => JSON.parse((await got(apiUrl + 'api/Sites/getBatchList')).body);
 
   /**
    * notify the server of stock changes

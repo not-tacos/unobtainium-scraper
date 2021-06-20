@@ -1,19 +1,17 @@
 'use strict';
 const CRAWLER_VERSION = 1;
 
-import got from 'got';
 import _ from 'lodash';
 import cheerio from 'cheerio';
 
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
-import { parseNumberEN, uuidv4 } from "./util";
+import { parseNumberEN } from "../src/util";
 import { createCrawlerBlackList } from '../src/blacklist';
-
-const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
+import { ApiClient } from '../src/api-client';
+import { CrawlClient } from '../src/crawl-client';
 
 let fs = null;
 let bunyan = null;
-let guid = null;
 
 try {
   bunyan = require('bunyan');
@@ -38,7 +36,6 @@ try {
  */
 
 
-const blackListStrikeDictionary = {};
 
 module.exports = (() => {
   // ================================================
@@ -55,13 +52,16 @@ module.exports = (() => {
   let blackList = [];
   let runOptions = {};
   let batchTimers = {};
+  let apiClient = null;
+  let crawlClient = null;
 
-  let logger = (() => {
-    this.trace = this.debug = () => {
+  let logger = {
+    trace: _.noop,
+    debug: _.noop,
+    info: console.log,
+    warn: console.log,
+    error: console.log,
     };
-    this.info = this.warn = this.error = console.log;
-    return this;
-  })();
 
   const loggerOptions = {
     name: 'unobtainiumCrawler',
@@ -81,7 +81,6 @@ module.exports = (() => {
     blackList = createCrawlerBlackList(_blackList,logger);
     productList = _productList || null;
     batchList = _batchList || null;
-    guid = guid || uuidv4();
 
     logger = createLogger(loggerOptions);
 
@@ -96,11 +95,20 @@ module.exports = (() => {
     logger.info('init() - CRAWLER_VERSION: ', CRAWLER_VERSION);
     logger.info('init() - ================================================');
 
-    productList = productList ? (await Promise.resolve(productList)) : await retrieveNewProductList();
-    batchList = batchList ? (await Promise.resolve(batchList)) : await retrieveBatchList();
+    apiClient = new ApiClient(
+      _apiUrl,
+      logger,
+      runOptions,
+      CRAWLER_VERSION,
+      blackList
+    );
+    crawlClient = new CrawlClient();
+
+    productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
+    batchList = batchList ? (await Promise.resolve(batchList)) : await apiClient.retrieveBatchList();
     logger.info('init() - loaded product list: ', productList.length);
     logger.info('init() - loaded batch list: ', batchList.length);
-    buildDictionary();
+    productDictionary = buildDictionary(productList);
     buildBatchDictionary();
     logger.info('init() - loaded product dictionary: ', productDictionary.length);
 
@@ -180,7 +188,7 @@ module.exports = (() => {
       };
 
       const startExecution = () => {
-        pingServer();
+        apiClient.pingServer()
 
         if (queue.length) {
 
@@ -280,69 +288,7 @@ module.exports = (() => {
    */
   const delay = (timeoutInMs) => new Promise(resolve => setTimeout(resolve, timeoutInMs));
 
-  /**
-   * retrive the product list from the server
-   * @return JSON list of Products
-   */
-  const retrieveProductList = async () => JSON.parse((await got(apiUrl + 'public/productList.json')).body);
-  const retrieveNewProductList = async () => JSON.parse((await got(apiUrl + 'api/Sites/getProductList')).body);
-  const retrieveBatchList = async () => JSON.parse((await got(apiUrl + 'api/Sites/getBatchList')).body);
 
-  /**
-   * notify the server of stock changes
-   * @param parsedResults {object}
-   * @param success {boolean} - if the update was a success (not becuase of an error, blacklist, etc.)
-   * @param html {string} - if the server responds that this update caused a stock hit them upload the related html
-   * @return Promise<response>
-   */
-  const notifyServer = async (parsedResults, success = false, html) => {
-    parsedResults.version = CRAWLER_VERSION;
-
-    try {
-      if (success && parsedResults.siteName) blackListStrikeDictionary[parsedResults.siteName] = 0;
-      const gotResults = await got.post(apiUrl + 'api/Sites/setAvailability', {json: parsedResults});
-      const results = JSON.parse(gotResults.body);
-      if (results && results.causedHit) {
-        console.log('notifyServer() - CAUSED STOCK HIT');
-        got.post(apiUrl + 'api/ScraperStocks/' + results.causedHit + '/submitHtml', {json: {html}});
-      }
-    } catch (e) {
-      logger.error('notifyServer() ERROR', e);
-    }
-  };
-
-  const notifyServerOfError = async (scraperError) => {
-    try {
-      scraperError.crawlerId = guid;
-      scraperError.crawlerVersion = CRAWLER_VERSION;
-      got.post(apiUrl + 'api/ScraperErrors', {json: scraperError});
-
-      if (scraperError.hostname) {
-        const host = scraperError.hostname;
-        blackListStrikeDictionary[host] = (blackListStrikeDictionary[host] || 0) + 1;
-        logger.info('notifyServerOfError() - ', host, 'has', blackListStrikeDictionary[host], 'strikes');
-        if (blackListStrikeDictionary[host] >= 3) blackList.add(host);
-      }
-
-    } catch (e) {
-      logger.error('notifyServerOfError() ERROR', e);
-    }
-  };
-
-  const pingServer = async () => {
-    try {
-      logger.debug('ping [' + CRAWLER_VERSION + ']', guid);
-      got.post(apiUrl + 'api/Crawlers/ping', {
-        json: {
-          id: guid,
-          configuration: runOptions,
-          version: CRAWLER_VERSION,
-        },
-      });
-    } catch (e) {
-      logger.error('notifyServerOfError() ERROR', e);
-    }
-  };
 
   /**
    * builds the parser that will query the product url and return an object of related product info
@@ -363,19 +309,16 @@ module.exports = (() => {
             renderTime: new Date().getTime(),
           };
 
-          notifyServer(updateInfo);
+          apiClient.notifyServer(updateInfo);
           return logger.warn('ProductParser() - TEMPORARILY BLACKLISTED: ' + siteName + '-' + product.productName);
         }
 
-        // TODO: randomize
-        // const ua = userAgent().toString();
-        const ua = userAgent.toString();
-        const html = await got(product.url, {
-          timeout: HostTimeouts[siteName],
-          headers: {'user-agent': userAgentDictionary[siteName] || ua},
-        });
+        const body = await crawlClient.get(
+          product.url,
+          HostTimeouts[siteName],
+          userAgentDictionary[siteName]
+        );
 
-        const body = html.body;
         const renderTime = new Date().getTime();
         const productName = product.productName;
         const country = product.country;
@@ -402,12 +345,12 @@ module.exports = (() => {
           // });
         }
 
-        notifyServer(productInfo, true, body);
+        apiClient.notifyServer(productInfo, true, body);
 
         return productInfo;
       } catch (e) {
 
-        notifyServer({
+        apiClient.notifyServer({
           productName: product.productName,
           url: product.url,
           price: product.price,
@@ -415,7 +358,7 @@ module.exports = (() => {
           renderTime: new Date().getTime(),
         });
 
-        notifyServerOfError({
+        apiClient.notifyServerOfError({
           hostname: siteName,
           productname: product.productName,
           url: product.url,
@@ -448,6 +391,20 @@ module.exports = (() => {
     };
   };
 
+  const buildDictionary = (productList) =>
+    // NOTE: now that we retrieve the list from the server sorted by oldest first we don't need to shuffle the list
+    // productDictionary = _.shuffle(_.map(productList, product => {
+    productList.map((product, index) => {
+      const hostname = new URL(product.url).hostname;
+      return {
+        index,
+        hostname,
+        productname: product.productName,
+        product: product,
+        parse: buildParser(product, hostname),
+      };
+    });
+
   /**
    * buildBatchParser()
    * @param batch
@@ -475,19 +432,16 @@ module.exports = (() => {
             country: batch.country,
             renderTime: new Date().getTime(),
           };
-          notifyServer(updateInfo);
+          apiClient.notifyServer(updateInfo);
           return logger.warn('BatchParser() - TEMPORARILY BLACKLISTED: ' + batch.hostname + '-' + batch.productName);
         }
 
-        // TODO: randomize
-        // const ua = userAgent().toString();
-        const ua = userAgent.toString();
-        const html = await got(batch.batchUrl, {
-          timeout: HostTimeouts[batch.hostname],
-          headers: {'user-agent': userAgentDictionary[batch.hostname] || ua},
-        });
+        const body = await crawlClient.get(
+          batch.batchUrl,
+          HostTimeouts[batch.hostname],
+          userAgentDictionary[batch.hostname]
+        );
 
-        const body = html.body;
         const renderTime = new Date().getTime();
         const productName = batch.productName;
         const hostname = batch.hostname;
@@ -538,13 +492,13 @@ module.exports = (() => {
 
             logger.info(productStr);
 
-            notifyServer(productInfo, true, body);
+            apiClient.notifyServer(productInfo, true, body);
 
             return productInfo;
 
           } catch (e) {
 
-            notifyServer({
+            apiClient.notifyServer({
               productName: productName,
               url: url,
               price: product.price,
@@ -552,7 +506,7 @@ module.exports = (() => {
               renderTime: new Date().getTime(),
             });
 
-            notifyServerOfError({
+            apiClient.notifyServerOfError({
               hostname,
               productname: product.productName,
               url,
@@ -601,50 +555,36 @@ module.exports = (() => {
    *     ]
    * }
    */
-  const buildDictionary = () => {
-    let uniqIndex = 0;
-
-    // NOTE: now that we retrieve the list from the server sorted by oldest first we don't need to shuffle the list
-    // productDictionary = _.shuffle(_.map(productList, product => {
-
-    productDictionary = (_.map(productList, product => {
-      return new (function() {
-        uniqIndex += 1;
-        this.index = uniqIndex;
-        this.hostname = (new URL(product.url).hostname);
-        this.productname = product.productName;
-        this.product = product;
-        this.parse = buildParser(product, this.hostname);
-      })();
-    }));
-  };
-
   const buildBatchDictionary = () => {
-    let uniqIndex = 0;
-
-    batchDictionary = (batchList.map(batch => {
-      return new (function() {
-        uniqIndex += 1;
-        this.index = uniqIndex;
-        this.batchUrl = batch.batchUrl;
-        this.country = batch.country;
-        this.hostname = batch.hostname;
-        this.productName = batch.productName;
-
-        const checkSites = _.filter(productList, site => {
+    batchDictionary = batchList
+      .map((batch, index) => {
+        const checkUrls = productList
+          .filter((site) => {
           const productName = site.productName;
-          const hostName = (new URL(site.url).hostname);
-          return (this.productName === productName && this.hostname === hostName);
-        });
+            const hostName = new URL(site.url).hostname;
+            return (
+              batch.productName === productName && batch.hostname === hostName
+            );
+          })
+          .map((site) => site.url);
 
-        this.checkUrls = checkSites.map(site => site.url);
-        this.parse = buildBatchParser(this);
-      })();
-    }));
-    batchDictionary = _.filter(batchDictionary, bItem => bItem.batchUrl && bItem.checkUrls.length);
+        const record = {
+          index: index,
+          batchUrl: batch.batchUrl,
+          country: batch.country,
+          hostname: batch.hostname,
+          productName: batch.productName,
+          checkUrls,
+        };
+
+        return { ...record, parse: buildBatchParser(record) };
+      })
+      .filter((bItem) => bItem.batchUrl && bItem.checkUrls.length);
 
     // TODO: take out when we get EVGA working, but for now we only get forbidden
-    batchDictionary = _.filter(batchDictionary, bItem => bItem.hostname !== 'www.evga.com');
+    batchDictionary = batchDictionary.filter(
+      (bItem) => bItem.hostname !== "www.evga.com"
+    );
   };
 
   // z.getInfo = async (product) => {

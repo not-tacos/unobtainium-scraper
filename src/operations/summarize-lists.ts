@@ -1,7 +1,7 @@
 import { ApiClient, ApiProduct } from "../api-client";
 import { CrawlerBlacklist } from "../blacklist";
 import _ from "lodash";
-import { Table } from "console-table-printer";
+import { Table, printTable } from "console-table-printer";
 
 export async function summarizeLists() {
   const apiClient = new ApiClient(
@@ -17,8 +17,22 @@ export async function summarizeLists() {
     hostname: new URL(p.url).hostname,
   }));
 
-  listingsByProduct(result);
-  listingsByStore(result);
+  const table1 = listingsByProduct(result);
+  const table2 = listingsByStore(result);
+  printTables(table2, table1);
+}
+
+function printTables(table1: Table, table2: Table) {
+  const t1 = table1.render().split("\n");
+  const t2 = table2.render().split("\n");
+
+  const t1EmptyRow = " ".repeat(t1[1].length);
+
+  const together = _.zip(t1, t2).map(
+    ([a, b]) => `${a || t1EmptyRow} ${b || ""}`
+  );
+
+  together.forEach((line) => console.log(line));
 }
 
 function listingsByProduct(result: (ApiProduct & { hostname: string })[]) {
@@ -38,7 +52,7 @@ function listingsByProduct(result: (ApiProduct & { hostname: string })[]) {
     sort: (a, b) => a.product.localeCompare(b.product),
   });
   table.addRows(rows);
-  table.printTable();
+  return table;
 }
 
 function listingsByStore(result: (ApiProduct & { hostname: string })[]) {
@@ -58,5 +72,5 @@ function listingsByStore(result: (ApiProduct & { hostname: string })[]) {
     sort: (a, b) => a.hostname.localeCompare(b.hostname),
   });
   table.addRows(rows);
-  table.printTable();
+  return table;
 }

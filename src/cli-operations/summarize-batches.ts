@@ -16,7 +16,7 @@ export async function summarizeBatches() {
 
   console.log(`Excluded ${result.length - remaining.length} empty batchUrls.`);
 
-  const table1 = tableByProduct(result, "Batches");
-  const table2 = tableByStore(result, "Batches");
+  const table1 = tableByProduct(remaining, "Batches");
+  const table2 = tableByStore(remaining, "Batches");
   printTables(table2, table1);
 }

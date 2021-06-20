@@ -5,6 +5,7 @@
   "main": "dist/scripts/unobtainiumCrawler.js",
   "scripts": {
     "build": "tsc",
+    "watch-build": "tsc -w",
     "test": "jest",
     "test:crawler:local": "node dist/scripts/testCrawler.js | bunyan",
     "start": "npm run test:crawler:local",
@@ -27,6 +28,7 @@
     "@types/lodash": "^4.14.170",
     "bunyan": "^1.8.15",
     "cheerio": "^1.0.0-rc.10",
+    "console-table-printer": "^2.9.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "got": "^11.8.2",

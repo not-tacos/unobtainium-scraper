@@ -15,7 +15,7 @@ type ScraperError = {
   hostname: string;
 };
 
-type ApiProduct = {
+export type ApiProduct = {
   country: string;
   productName: string;
   price: number;

@@ -16,16 +16,14 @@ const siteIsInStockZotac = (html) => (html && (html.includes('add-to-cart-button
 const siteIsInStockGamestop = (html) => (html && (html.includes('"availability":"Available"')));
 const siteIsInStockEVGA = (html) => (html && (html.includes('class="btnBigAddCart"')));
 const siteIsInStockNewegg = (html) => {
-  if(!html)
+  if (!html) {
     return 0;
-    const $ = cheerio.load(html);
-    const aTags = $('script[type="application/ld+json"]').find('a').toArray();
+  }
+  return (html && html.includes('Add to cart') && html.includes('Sold by: Newegg') && !html.includes('<span class="message-title">Not available. </span>'));
 
-    // Look through all the <a> tags and find the first one that matches our check url
-  return (aTags.includes('"availability":"http://schema.org/InStock"'));
 };
 export const containerIsInStockNewegg = (html) => {
-  return (html && (html.includes('Add to cart') || html.includes('View Details')) && !html.includes('<span class="message-title">Not available. </span>'));
+  (html && (html.includes('<button class="btn btn-primary btn-mini" title="Add') && !html.includes('<span class="message-title">Not available. </span>')) && html.includes('class="shipped-by-newegg">Shipped by Newegg</a>'));
 };
 const siteIsInStockWalmart = (html) => (html && (html.includes('button prod-ProductCTA--primary prod-ProductCTA--server display-inline-block button--primary')));
 const siteIsInStockSamsclub = (html) => (html && html.includes('Ship this item') && !html.includes('Out of stock'));

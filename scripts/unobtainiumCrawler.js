@@ -7,6 +7,7 @@ import cheerio from 'cheerio';
 
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
 import { parseNumberEN, uuidv4 } from "./util";
+import { createCrawlerBlackList } from '../src/blacklist';
 
 const userAgent = new (require('user-agents'))({deviceCategory: 'desktop'});
 
@@ -36,17 +37,6 @@ try {
  * }
  */
 
-/**
- * blackListHostDictionary: object = {
- *   hostname: string,
- *   expiry: number [the amount of time to expire the blacklist record]
- *   blackListedTime: date [time when blacklist record was added]
- * }
- */
-const blackListHostDictionary = {
-  default: 8 * 60 * 60 * 1000 + (1000 * 60), // 8 hours and 1 minute in ms
-  // default: (1000 * 30), // TESTING: 30 seconds
-};
 
 const blackListStrikeDictionary = {};
 
@@ -88,7 +78,7 @@ module.exports = (() => {
   z.init = async (_env, _apiUrl, _blackList = [], _productList, _batchList) => {
     env = _env || env;
     apiUrl = _apiUrl || apiUrl;
-    blackList = createCrawlerBlackList(_blackList);
+    blackList = createCrawlerBlackList(_blackList,logger);
     productList = _productList || null;
     batchList = _batchList || null;
     guid = guid || uuidv4();
@@ -266,43 +256,6 @@ module.exports = (() => {
   const clearBatchTimers = () => {
     logger.warn('ClearBatchTimers() - cleaning up');
     Object.keys(batchTimers).forEach(k => clearTimeout(batchTimers[k]));
-  };
-
-  const createCrawlerBlackList = (list) => {
-    if (list.process) return list.process();
-    const blm = this;
-    blm.list = list;
-
-    blm.getExpiry = (hostname) => {
-      const expiry = blackListHostDictionary[hostname] || blackListHostDictionary['default'];
-      logger.debug('blackList.getExpiry()', expiry);
-      return expiry;
-    };
-
-    blm.isBlacklisted = (hostname) => {
-      const foundHost = !!_.find(blm.list, item => item.hostname.toLowerCase() === hostname.toLowerCase());
-      logger.debug('blackList.isBlacklisted()', foundHost);
-      return foundHost;
-    };
-
-    blm.add = (hostname) => {
-      const blackListRecord = {hostname, expiry: new Date().getTime() + this.getExpiry(hostname)};
-      blm.list.push(blackListRecord);
-      logger.debug('blackList.add()', blackListRecord);
-      logger.warn('BLACKLISTING', hostname);
-      return blackListRecord;
-    };
-
-    blm.process = () => {
-      const filteredList = _.filter(blm.list, item => (new Date().getTime() < item.expiry));
-      logger.debug('blackList.process() ', blm.list, filteredList);
-      blm.list = filteredList;
-      return blm;
-    };
-
-    blm.process();
-
-    return blm;
   };
 
   const createLogger = (options) => {

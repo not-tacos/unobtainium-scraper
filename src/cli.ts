@@ -1,27 +1,36 @@
-import { parse } from "ts-command-line-args";
+import { ArgumentConfig, parse, ParseOptions } from "ts-command-line-args";
 import { ApiClient } from "./api-client";
 import { Logger } from "./types";
 import _ from "lodash";
 import { CrawlerBlacklist } from "./blacklist";
-import { summarizeLists } from "./operations/summarize-lists";
+import { summarizeLists } from "./cli-operations/summarize-lists";
+import { summarizeBatches } from "./cli-operations/summarize-batches";
+import commandLineUsage from "command-line-usage";
 
 interface CLIArguments {
   summarizeLists?: boolean;
+  summarizeBatches?: boolean;
   help?: boolean;
 }
 
-export const args = parse<CLIArguments>(
+const args = parse<CLIArguments>(
   {
     help: {
       type: Boolean,
       optional: true,
       alias: "h",
       description: "Prints this usage guide",
+      defaultValue: process.argv.length <= 2, // show help when the user supplies no args
     },
     summarizeLists: {
       type: Boolean,
       optional: true,
       description: "Summarizes current product lists.",
+    },
+    summarizeBatches: {
+      type: Boolean,
+      optional: true,
+      description: "Summarizes current product batch lists.",
     },
   },
   {
@@ -38,10 +47,9 @@ export const args = parse<CLIArguments>(
 async function go() {
   if (args.summarizeLists) {
     await summarizeLists();
-
-    // todo:
-    //  - counts for each product
-    //  - batch items.
+  }
+  if (args.summarizeBatches) {
+    await summarizeBatches();
   }
 }
 

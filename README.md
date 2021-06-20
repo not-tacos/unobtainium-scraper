@@ -1,3 +1,5 @@
+[![Build](https://github.com/not-tacos/unobtainium-scraper/actions/workflows/build.yml/badge.svg)](https://github.com/not-tacos/unobtainium-scraper/actions/workflows/build.yml)
+
 # unobtainium-scraper
 This repo contains the scraper code for the Unobtainium project stock alert bot. (https://unobtainium.app)
 

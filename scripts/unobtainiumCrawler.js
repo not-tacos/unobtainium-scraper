@@ -31,7 +31,7 @@ import { buildBatchParser } from '../src/batch-parser';
 
 
 
-module.exports = (() => {
+const oldExport = (() => {
   // ================================================
   // PRIVATE variables
   // ================================================
@@ -348,3 +348,15 @@ module.exports = (() => {
   // ================================================
   return z;
 })();
+
+export default {
+  async init(a,b,c){
+    console.log("### init()");
+    return oldExport.init(a,b,c);
+  },
+  async startWithOptions(a){
+
+    console.log("### startWithOptions()");
+    return oldExport.startWithOptions(a);
+  }
+}

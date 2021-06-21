@@ -349,14 +349,26 @@ const oldExport = (() => {
   return z;
 })();
 
-export default {
-  async init(a,b,c){
-    console.log("### init()");
-    return oldExport.init(a,b,c);
-  },
-  async startWithOptions(a){
-
-    console.log("### startWithOptions()");
+class UnobtaniumCrawler {
+  constructor() {}
+  init(a, b, c) {
+    return oldExport.init(a, b, c);
+  }
+  startWithOptions(a) {
     return oldExport.startWithOptions(a);
   }
 }
+
+let theCrawler = null;
+
+export default {
+  async init(a, b, c) {
+    console.log("### init()");
+    theCrawler = new UnobtaniumCrawler();
+    return theCrawler.init(a, b, c);
+  },
+  async startWithOptions(a) {
+    console.log("### startWithOptions()");
+    return theCrawler.startWithOptions(a);
+  },
+};

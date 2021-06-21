@@ -1,9 +1,8 @@
-import bunyan, { createLogger } from "bunyan";
+import { createLogger } from "bunyan";
 import _ from "lodash";
 
-/**
- * This type desribes what the app needs from a logger.
- */
+export { LogLevel } from "bunyan";
+
 export type Logger = {
   trace: typeof console.log;
   error: typeof console.log;

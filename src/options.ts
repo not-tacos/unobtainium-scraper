@@ -1,5 +1,7 @@
+import { LogLevel } from "./logger";
+
 export type CrawlerOptions = {
-  logLevel?: string; //todo: specific values
+  logLevel?: LogLevel;
   logDir?: string;
   batchSize?: number;
   limit?: number;

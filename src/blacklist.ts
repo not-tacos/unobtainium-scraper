@@ -1,5 +1,5 @@
-import { Logger } from "./types";
 import _ from "lodash";
+import { Logger } from "./logger";
 
 export type BlackListItem = {
   hostname: string;

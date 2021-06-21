@@ -9,15 +9,9 @@ import { parseNumberEN } from "../src/util";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';
+import { createUnobtaniumLogger } from "../src/logger";
 
 let fs = null;
-let bunyan = null;
-
-try {
-  bunyan = require('bunyan');
-} catch (e) {
-  console.log();
-}
 
 /** Product {object} = {
  *   url: {string}
@@ -55,21 +49,7 @@ module.exports = (() => {
   let apiClient = null;
   let crawlClient = null;
 
-  let logger = {
-    trace: _.noop,
-    debug: _.noop,
-    info: console.log,
-    warn: console.log,
-    error: console.log,
-    };
-
-  const loggerOptions = {
-    name: 'unobtainiumCrawler',
-    hostname: 'xxx',
-    streams: [
-      {stream: process.stdout, level: 'info'},
-    ],
-  };
+  let logger = createUnobtaniumLogger();
 
   // ================================================
   // PUBLIC functions
@@ -82,7 +62,6 @@ module.exports = (() => {
     productList = _productList || null;
     batchList = _batchList || null;
 
-    logger = createLogger(loggerOptions);
 
     if (env === 'dev') {
       logger.info('init() - ================================================');
@@ -154,9 +133,12 @@ module.exports = (() => {
     });
 
     if (options.logDir) {
-      loggerOptions.streams[0] = {stream: process.stdout, level: options.logLevel};
-      loggerOptions.streams.push({path: options.logDir + 'crawl.log', level: options.logLevel});
-      logger = createLogger(loggerOptions);
+      logger.addStream({
+        path: options.logDir + "crawl.log",
+      });
+    }
+    if (options.logLevel) {
+      logger.level(options.logLevel);
     }
 
     logger.info('start() - startingWithOptions: ', options);
@@ -264,11 +246,6 @@ module.exports = (() => {
   const clearBatchTimers = () => {
     logger.warn('ClearBatchTimers() - cleaning up');
     Object.keys(batchTimers).forEach(k => clearTimeout(batchTimers[k]));
-  };
-
-  const createLogger = (options) => {
-    if (bunyan) return new bunyan(options);
-    return logger;
   };
 
   const writeHtmlToFile = (fileName, html) => {

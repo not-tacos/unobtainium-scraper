@@ -10,6 +10,8 @@ import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';
 import { createUnobtaniumLogger } from "../src/logger";
+import { isEmptyStatement } from 'typescript';
+import { getCountries } from '../src/options';
 
 let fs = null;
 
@@ -109,28 +111,24 @@ module.exports = (() => {
     if (!productList) await z.init();
 
     // logger.info('start() - startWithOptions: US only');
-    const options = runOptions = new (function() {
 
-      // limit countries to a single item and then filter the product dictionary
-      // this.country = _options.country || false;
-      // if (this.country) productDictionary = _.filter(productDictionary, p => p.product.country === this.country);
+    const options = runOptions = {
+      countries: getCountries(),
+      logLevel: _options.logLevel || process.env.CRAWLER_LOG_LEVEL || "info",
+      logDir: _options.logDir || process.env.CRAWLER_LOG_DIR || null,
+      batchSize: _options.batchSize || _options.limit || 10,
+      limit: _options.limit || productDictionary.length,
+      throttle: _options.throttle || 5,
+      logHtml: process.env.CRAWLER_LOG_HTML || false,
+    };
 
-      // limit countries to following list and then filter the product dictionary
-      try {
-        this.countries = JSON.parse(process.env.COUNTRIES_ENABLED);
-      } catch (e) { }
-      if (!this.countries || !this.countries.length) this.countries = ['US'];
+    productDictionary = _.filter(productDictionary, (p) =>
+      options.countries.includes(p.product.country)
+    );
+    batchDictionary = _.filter(batchDictionary, (b) =>
+      options.countries.includes(b.country)
+    );
 
-      productDictionary = _.filter(productDictionary, p => this.countries.includes(p.product.country));
-      batchDictionary = _.filter(batchDictionary, b => this.countries.includes(b.country));
-
-      this.logLevel = _options.logLevel || process.env.CRAWLER_LOG_LEVEL || 'info';
-      this.logDir = _options.logDir || process.env.CRAWLER_LOG_DIR || null;
-      this.batchSize = _options.batchSize || _options.limit || 10;
-      this.limit = _options.limit || productDictionary.length;
-      this.throttle = _options.throttle || 5;
-      this.logHtml = process.env.CRAWLER_LOG_HTML || false;
-    });
 
     if (options.logDir) {
       logger.addStream({

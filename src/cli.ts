@@ -1,26 +1,14 @@
-import { ArgumentConfig, parse, ParseOptions } from "ts-command-line-args";
-import { ApiClient } from "./api-client";
-import { Logger } from "./types";
-import _ from "lodash";
-import { CrawlerBlacklist } from "./blacklist";
-import { summarizeLists } from "./cli-operations/summarize-lists";
+import { parse } from "ts-command-line-args";
 import { summarizeBatches } from "./cli-operations/summarize-batches";
-import commandLineUsage from "command-line-usage";
+import { summarizeLists } from "./cli-operations/summarize-lists";
 
-interface CLIArguments {
-  summarizeLists?: boolean;
-  summarizeBatches?: boolean;
-  help?: boolean;
-}
-
-const args = parse<CLIArguments>(
+const args = parse(
   {
     help: {
       type: Boolean,
       optional: true,
       alias: "h",
       description: "Prints this usage guide",
-      defaultValue: process.argv.length <= 2, // show help when the user supplies no args
     },
     summarizeLists: {
       type: Boolean,
@@ -41,10 +29,16 @@ const args = parse<CLIArguments>(
         content: "Mostly for testing and development",
       },
     ],
-  }
+  },
+  true,
+  true
 );
 
 async function go() {
+  if (process.argv.length <= 2) {
+    args._commandLineResults.printHelp();
+  }
+
   if (args.summarizeLists) {
     await summarizeLists();
   }

@@ -5,15 +5,13 @@ import _ from 'lodash';
 import cheerio from 'cheerio';
 
 import { batchHostTimeouts, containerIsInStockNewegg, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
-import { parseNumberEN } from "../src/util";
+import { firstUrlSegment, parseNumberEN } from "../src/util";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';
 import { createUnobtaniumLogger } from "../src/logger";
-import { isEmptyStatement } from 'typescript';
 import { getCountries } from '../src/options';
-
-let fs = null;
+import { FileWriter } from '../src/file-writer';
 
 /** Product {object} = {
  *   url: {string}
@@ -50,6 +48,7 @@ module.exports = (() => {
   let batchTimers = {};
   let apiClient = null;
   let crawlClient = null;
+  let fileWriter = null;
 
   let logger = createUnobtaniumLogger();
 
@@ -119,8 +118,10 @@ module.exports = (() => {
       batchSize: _options.batchSize || _options.limit || 10,
       limit: _options.limit || productDictionary.length,
       throttle: _options.throttle || 5,
-      logHtml: process.env.CRAWLER_LOG_HTML || false,
+      logHtml: (!!process.env.CRAWLER_LOG_HTML) || false,
     };
+
+    fileWriter = new FileWriter(options,logger);
 
     productDictionary = _.filter(productDictionary, (p) =>
       options.countries.includes(p.product.country)
@@ -246,16 +247,6 @@ module.exports = (() => {
     Object.keys(batchTimers).forEach(k => clearTimeout(batchTimers[k]));
   };
 
-  const writeHtmlToFile = (fileName, html) => {
-    if (!runOptions.logHtml) return true;
-    try {
-      fs = fs || require('fs');
-      fs.writeFileSync(runOptions.logHtml + fileName, html);
-    } catch (e) {
-      logger.error('writeHtmlToFile() ERROR: ', e);
-    }
-  };
-
   /**
    * Helper function to resolve promise after a delay in MS
    * @param timeoutInMs
@@ -302,9 +293,8 @@ module.exports = (() => {
         let stock = isInStock ? 1 : 0; // TODO: implement parsers for actual stock #
         const isThirdParty = parseProductIsThirdParty(product, siteName, body);
         const price = parseProductPrice(product, siteName, body);
-        const htmlFileName = siteName + '-' + productName + '.html';
 
-        writeHtmlToFile(htmlFileName, body);
+        fileWriter.writeHtmlToFile(`${siteName}-${productName}`, body);
 
         const productInfo = {productName, url, isInStock, stock, isThirdParty, price, siteName, country, renderTime};
         logger.debug('ProductParser() - parsedInfo: ', stock ? productInfo.stock : 'NO STOCK', '-', productInfo.productName, ' - ', product.url);
@@ -421,9 +411,8 @@ module.exports = (() => {
         const productName = batch.productName;
         const hostname = batch.hostname;
         const country = batch.country;
-        const htmlFileName = 'batch-' + hostname + '-' + country + '-' + productName + '.html';
 
-        writeHtmlToFile(htmlFileName, body);
+        fileWriter.writeHtmlToFile(`batch-${hostname}-${country}-${productName}`, body);
 
         batch.checkUrls.forEach(url => {
           const product = _.find(productList, site => url.includes(site.url));
@@ -629,9 +618,10 @@ module.exports = (() => {
       // Just for testing purposes create a file with just the container we caught in the above parsing, if we did
       // this right we should get a div for just the product we want out of the index page that we can load in our
       // browser and double check
-      const hostname = new URL(url).hostname;
-      const filename = 'batch-partial-' + (url.replace(/https?:\/\//g, '').replace(hostname + '/', '').split('/')[0] || 'no-name') + '.html';
-      writeHtmlToFile(filename, newBody);
+      fileWriter.writeHtmlToFile(
+        `batch-partial-${firstUrlSegment(url)}`,
+        newBody
+      );
 
       // On the newegg index page we have the benefit of them using the same images/buttons to denot if a product is in
       // stock so we can just sent the mini-container we parsed direct to the host specific parser
@@ -709,8 +699,10 @@ module.exports = (() => {
       // create a filename and write to file for testing
       // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
       const hostname = new URL(url).hostname;
-      const filename = 'batch-partial-' + hostname + '-' + productNumber + '.html';
-      writeHtmlToFile(filename, newBody);
+      fileWriter.writeHtmlToFile(
+        `batch-partial-${hostname}-${productNumber}`,
+        newBody
+      );
       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       return newBody.includes('Add to Cart');
@@ -775,9 +767,10 @@ module.exports = (() => {
       // Just for testing purposes create a file with just the container we caught in the above parsing, if we did
       // this right we should get a div for just the product we want out of the index page that we can load in our
       // browser and double check
-      const hostname = new URL(url).hostname;
-      const filename = 'batch-partial-' + (url.replace(/https?:\/\//g, '').replace(hostname + '/', '').split('/')[0] || 'no-name') + '.html';
-      writeHtmlToFile(filename, newBody);
+      fileWriter.writeHtmlToFile(
+        `batch-partial-${firstUrlSegment(url)}`,
+        newBody
+      );
 
       // On the newegg index page we have the benefit of them using the same images/buttons to denote if a product is in
       // stock so we can just sent the mini-container we parsed direct to the host specific parser
@@ -855,8 +848,10 @@ module.exports = (() => {
       // create a filename and write to file for testing
       // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
       const hostname = new URL(url).hostname;
-      const filename = 'batch-partial-' + hostname + '-' + productNumber + '.html';
-      writeHtmlToFile(filename, newBody);
+      fileWriter.writeHtmlToFile(
+        `batch-partial-${hostname}-${productNumber}`,
+        newBody
+      );
       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       return sitePriceBestBuy(newBody);

@@ -12,3 +12,14 @@ export function parseNumberEN(value: string) {
   const cleaned = value.replace(cleanPattern, "");
   return parseFloat(cleaned);
 }
+
+export function firstUrlSegment(url: string) {
+  const hostname = new URL(url).hostname;
+
+  return (
+    url
+      .replace(/https?:\/\//g, "")
+      .replace(hostname + "/", "")
+      .split("/")[0] || "no-name"
+  );
+}

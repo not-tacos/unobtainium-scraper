@@ -1,10 +1,10 @@
 import _ from "lodash";
 import cheerio from "cheerio";
+import { firstUrlSegment } from "./util";
 import {
   containerIsInStockNewegg,
   genericIsInStockEnglish,
-} from "../scripts/sites";
-import { firstUrlSegment } from "./util";
+} from "./is-in-stock";
 
 const batchIsInStockNewegg = (logger, fileWriter, html, url) => {
   // First check to see if the check Url exists on the page at all

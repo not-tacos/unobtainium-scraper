@@ -4,9 +4,14 @@ import fs from "fs";
 import { Logger } from "./logger";
 
 export class FileWriter {
-  constructor(readonly options: CrawlerOptions, readonly logger: Logger) {}
+  public logHtml: boolean;
+
+  constructor(options: CrawlerOptions, readonly logger: Logger) {
+    this.logHtml = !!options.logHtml;
+  }
+
   public writeHtmlToFile = (fileName, html) => {
-    if (this.options.logHtml == undefined || this.options.logHtml == false) {
+    if (this.logHtml == undefined || this.logHtml == false) {
       return true;
     }
     try {

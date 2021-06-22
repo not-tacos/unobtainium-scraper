@@ -84,6 +84,8 @@ module.exports = (() => {
     );
     crawlClient = new CrawlClient();
 
+    fileWriter = new FileWriter({},logger);
+
     productList = productList ? (await Promise.resolve(productList)) : await apiClient.retrieveNewProductList();
     batchList = batchList ? (await Promise.resolve(batchList)) : await apiClient.retrieveBatchList();
     logger.info('init() - loaded product list: ', productList.length);
@@ -121,7 +123,9 @@ module.exports = (() => {
       logHtml: (!!process.env.CRAWLER_LOG_HTML) || false,
     };
 
-    fileWriter = new FileWriter(options,logger);
+    // this was constructed at init(), but the setting is applied now:
+    fileWriter.logHtml = options.logHtml;
+
 
     productDictionary = _.filter(productDictionary, (p) =>
       options.countries.includes(p.product.country)

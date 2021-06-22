@@ -1,4 +1,6 @@
 import { parse } from "ts-command-line-args";
+import { crawlOnce } from "./cli-operations/crawl-once";
+
 import { summarizeBatches } from "./cli-operations/summarize-batches";
 import { summarizeLists } from "./cli-operations/summarize-lists";
 
@@ -10,15 +12,20 @@ const args = parse(
       alias: "h",
       description: "Prints this usage guide",
     },
-    summarizeLists: {
+    "summarize-lists": {
       type: Boolean,
       optional: true,
       description: "Summarizes current product lists.",
     },
-    summarizeBatches: {
+    "summarize-batches": {
       type: Boolean,
       optional: true,
       description: "Summarizes current product batch lists.",
+    },
+    "crawl-once": {
+      type: Boolean,
+      optional: true,
+      description: "Starts the crawler. (pipe its output through bunyan)",
     },
   },
   {
@@ -39,11 +46,14 @@ async function go() {
     args._commandLineResults.printHelp();
   }
 
-  if (args.summarizeLists) {
+  if (args["summarize-lists"]) {
     await summarizeLists();
   }
-  if (args.summarizeBatches) {
+  if (args["summarize-batches"]) {
     await summarizeBatches();
+  }
+  if (args["crawl-once"]) {
+    await crawlOnce();
   }
 }
 

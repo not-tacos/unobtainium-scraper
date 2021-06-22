@@ -33,7 +33,8 @@ const args = parse(
     headerContentSections: [
       {
         header: "Unobtanium Crawler CLI",
-        content: "Mostly for testing and development",
+        content:
+          "Mostly for testing and development.\n\nWhen invoking via 'npm run', add your options after a '--' like this:\n\nnpm run cli -- --summarize-lists",
       },
     ],
   },

@@ -43,15 +43,19 @@ $ npm start
 There is a work-in-progress CLI interface available via `npm run cli`:
 
 ```
-~/r/unobtainium-scraper (cli)> npm run cli
+~/r/unobtainium-scraper (cli)> npm run cli -- --help
 
 > unobtainium-scraper@1.0.0 cli /Users/jrr/repos/unobtainium-scraper
-> node dist/src/cli.js
+> node dist/src/cli.js "--help"
 
 
 Unobtanium Crawler CLI
 
-  Mostly for testing and development
+  Mostly for testing and development.
+
+  When invoking via 'npm run', add your options after a '--' like this:
+
+  npm run cli -- --summarize-lists
 
 Options
 
@@ -59,6 +63,7 @@ Options
   --summarize-lists      Summarizes current product lists.
   --summarize-batches    Summarizes current product batch lists.
   --crawl-once           Starts the crawler. (pipe its output through bunyan)
+
 ```
 
 ## Contributing

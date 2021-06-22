@@ -1,14 +1,5 @@
 import { blackListHostDictionary, CrawlerBlacklist } from "./blacklist";
-import { Logger } from "./types";
-
-import _ from "lodash";
-
-const nopLogger: Logger = {
-  debug: _.noop,
-  error: _.noop,
-  info: _.noop,
-  warn: _.noop,
-};
+import { nopLogger } from "./logger";
 
 describe("Blacklist", () => {
   it("has default expiration for unknown host", () => {

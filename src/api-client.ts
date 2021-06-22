@@ -1,6 +1,6 @@
 import got from "got";
 import { CrawlerBlacklist } from "./blacklist";
-import { Logger } from "./types";
+import { Logger } from "./logger";
 
 import { uuidv4 } from "./util";
 

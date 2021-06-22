@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/not-tacos/unobtainium-scraper#readme",
   "dependencies": {
+    "@types/bunyan": "^1.8.6",
     "@types/express": "^4.17.12",
     "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.170",

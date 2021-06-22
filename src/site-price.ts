@@ -6,7 +6,7 @@ import { Logger } from "./logger";
 import { Product } from "./types";
 import { parseNumberEN } from "./util";
 
-const sitePriceBestBuy = (html) => {
+export const sitePriceBestBuy = (html) => {
   if (html) {
     let startString = "Your price for this item is $<!-- -->";
     let indexStart = parseInt(html.indexOf(startString));
@@ -35,7 +35,7 @@ const sitePriceAmazon = (html) => {
   }
 };
 
-const sitePriceNewegg = (html) => {
+export const sitePriceNewegg = (html) => {
   if (html) {
     let startString = '<span class="price-current-label"></span>$<strong>';
     let indexStart = parseInt(html.indexOf(startString));

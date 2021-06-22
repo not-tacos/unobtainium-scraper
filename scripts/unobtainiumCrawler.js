@@ -3,7 +3,7 @@ const CRAWLER_VERSION = 1;
 
 import _ from 'lodash';
 
-import { batchHostTimeouts, genericIsInStockEnglish, HostTimeouts, isInStockSiteDictionary, userAgentDictionary } from "./sites";
+import { batchHostTimeouts, HostTimeouts, userAgentDictionary } from "./sites";
 import { createCrawlerBlackList } from '../src/blacklist';
 import { ApiClient } from '../src/api-client';
 import { CrawlClient } from '../src/crawl-client';
@@ -14,6 +14,7 @@ import { parseBatchProductIsInStock } from '../src/batch-in-stock';
 import { parseProductPrice } from '../src/site-price';
 import { parseBatchProductPrice } from '../src/batch-price';
 import { parseProductIsThirdParty } from '../src/is-third-party';
+import { parseProductIsInStock } from '../src/is-in-stock';
 
 /** Product {object} = {
  *   url: {string}
@@ -291,7 +292,7 @@ module.exports = (() => {
         const productName = product.productName;
         const country = product.country;
         const url = product.url;
-        let isInStock = parseProductIsInStock(product, siteName, body);
+        let isInStock = parseProductIsInStock(logger, product, siteName, body);
         let stock = isInStock ? 1 : 0; // TODO: implement parsers for actual stock #
         const isThirdParty = parseProductIsThirdParty(product, siteName, body);
         const price = parseProductPrice(logger, product, siteName, body);
@@ -581,27 +582,6 @@ module.exports = (() => {
   //   logger.debug('price: ', body.match(priceRegexp));
   // };
 
-
-  const parseProductIsInStock = (product, siteName, html) => {
-    switch (product.country) {
-      case 'US':
-      case 'USA':
-      case 'UK':
-      case 'CAN':
-      case 'TEST':
-      case 'test':
-        const siteSpecificIsInStockFunction = isInStockSiteDictionary[siteName];
-        if (siteSpecificIsInStockFunction) {
-          logger.debug('parseProductIsInStock() - found specific site function: ', siteName);
-          return siteSpecificIsInStockFunction(html);
-        } else {
-          logger.debug('parseProductIsInStock() - using generic: ', siteName);
-          return genericIsInStockEnglish(html);
-        }
-      default:
-        return genericIsInStockEnglish(html);
-    }
-  };
 
 
 

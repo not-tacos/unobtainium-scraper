@@ -15,6 +15,21 @@ type ScraperError = {
   hostname: string;
 };
 
+export type ApiProduct = {
+  country: string;
+  productName: string;
+  price: number;
+  url: string;
+  lastUpdated: string;
+};
+
+export type ApiBatchProduct = {
+  batchUrl: string;
+  country: string;
+  hostname: string;
+  productName: string;
+};
+
 const blackListStrikeDictionary = {};
 export class ApiClient {
   private guid: string;
@@ -35,9 +50,9 @@ export class ApiClient {
    */
   retrieveProductList = async () =>
     JSON.parse((await got(this.apiUrl + "public/productList.json")).body);
-  retrieveNewProductList = async () =>
+  retrieveNewProductList = async (): Promise<ApiProduct[]> =>
     JSON.parse((await got(this.apiUrl + "api/Sites/getProductList")).body);
-  retrieveBatchList = async () =>
+  retrieveBatchList = async (): Promise<ApiBatchProduct[]> =>
     JSON.parse((await got(this.apiUrl + "api/Sites/getBatchList")).body);
 
   pingServer = async () => {

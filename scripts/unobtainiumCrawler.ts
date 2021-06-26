@@ -116,6 +116,8 @@ class UnobtaniumCrawler {
       limit: _options.limit || this.productDictionary.length,
       throttle: _options.throttle || 5,
       logHtml: !!process.env.CRAWLER_LOG_HTML || false,
+      disableBatchExecution: process.env.DISABLE_BATCH_EXECUTION === "true",
+      disableProductList: process.env.DISABLE_PRODUCTLIST === "true",
     };
 
     // fileWriter was constructed earlier, but the setting is applied now:
@@ -153,8 +155,9 @@ class UnobtaniumCrawler {
     let promises = [];
     let queue = [];
 
-    if (process.env.DISABLE_BATCH_EXECUTION !== "true")
+    if (this.options.disableBatchExecution != true) {
       this.startBatchExecution();
+    }
 
     return new Promise<void>((resolve, reject) => {
       const addToQueue = () => {
@@ -206,7 +209,9 @@ class UnobtaniumCrawler {
       };
 
       // NOTE: turn this ON in the env file to better test batch parsing
-      if (process.env.DISABLE_PRODUCTLIST === "true") return;
+      if (this.options.disableProductList) {
+        return;
+      }
       return addToQueue();
     });
   }

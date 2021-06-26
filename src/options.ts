@@ -8,6 +8,8 @@ export type CrawlerOptions = {
   limit?: number;
   throttle?: number;
   logHtml?: boolean;
+  disableBatchExecution?: boolean;
+  disableProductList?: boolean;
 };
 
 export function getCountries() {

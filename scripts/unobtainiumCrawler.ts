@@ -7,7 +7,12 @@ import { batchHostTimeouts } from "./sites";
 import { createCrawlerBlackList } from "../src/blacklist";
 import { ApiClient } from "../src/api-client";
 import { CrawlClient } from "../src/crawl-client";
-import { createUnobtaniumLogger } from "../src/logger";
+import {
+  BunyanLogger,
+  createUnobtaniumLogger,
+  LogLevel,
+  logLevelOr,
+} from "../src/logger";
 import { CrawlerOptions, getCountries } from "../src/options";
 import { FileWriter } from "../src/file-writer";
 import { buildParser } from "../src/product-parser";
@@ -30,7 +35,10 @@ import { buildBatchParser } from "../src/batch-parser";
  */
 
 class UnobtaniumCrawler {
-  logger: any;
+  options: CrawlerOptions;
+  logger: BunyanLogger;
+  apiClient: ApiClient;
+
   constructor() {
     this.logger = createUnobtaniumLogger();
   }
@@ -38,7 +46,6 @@ class UnobtaniumCrawler {
   // PRIVATE variables
   // ================================================
 
-  // const z = this;
   env: string = "dev";
   apiUrl =
     this.env === "dev" ? "http://localhost:3009/" : "https://unobtainium.app/";
@@ -47,9 +54,7 @@ class UnobtaniumCrawler {
   productList = null;
   batchList = null;
   blackList = null;
-  runOptions = {};
   batchTimers = {};
-  apiClient = null;
   crawlClient = null;
   fileWriter = null;
 
@@ -92,7 +97,7 @@ class UnobtaniumCrawler {
     this.apiClient = new ApiClient(
       _apiUrl,
       this.logger,
-      this.runOptions,
+      this.options,
       CRAWLER_VERSION,
       this.blackList
     );
@@ -134,36 +139,39 @@ class UnobtaniumCrawler {
 
     // logger.info('start() - startWithOptions: US only');
 
-    const options = (this.runOptions = {
+    this.options = {
       countries: getCountries(),
-      logLevel: _options.logLevel || process.env.CRAWLER_LOG_LEVEL || "info",
+      logLevel: logLevelOr(
+        _options.logLevel || process.env.CRAWLER_LOG_LEVEL,
+        "info"
+      ),
       logDir: _options.logDir || process.env.CRAWLER_LOG_DIR || null,
       batchSize: _options.batchSize || _options.limit || 10,
       limit: _options.limit || this.productDictionary.length,
       throttle: _options.throttle || 5,
       logHtml: !!process.env.CRAWLER_LOG_HTML || false,
-    });
+    };
 
     // this was constructed at init(), but the setting is applied now:
-    this.fileWriter.logHtml = options.logHtml;
+    this.fileWriter.logHtml = this.options.logHtml;
 
     this.productDictionary = _.filter(this.productDictionary, (p) =>
-      options.countries.includes(p.product.country)
+      this.options.countries.includes(p.product.country)
     );
     this.batchDictionary = _.filter(this.batchDictionary, (b) =>
-      options.countries.includes(b.country)
+      this.options.countries.includes(b.country)
     );
 
-    if (options.logDir) {
+    if (this.options.logDir) {
       this.logger.addStream({
-        path: options.logDir + "crawl.log",
+        path: this.options.logDir + "crawl.log",
       });
     }
-    if (options.logLevel) {
-      this.logger.level(options.logLevel);
+    if (this.options.logLevel) {
+      this.logger.level(this.options.logLevel);
     }
 
-    this.logger.info("start() - startingWithOptions: ", options);
+    this.logger.info("start() - startingWithOptions: ", this.options);
     this.logger.info(
       "start() - startingWithOptions productDictionary",
       this.productDictionary.length
@@ -185,8 +193,8 @@ class UnobtaniumCrawler {
       const addToQueue = () => {
         promises = [];
 
-        _.range(options.batchSize).forEach((i) => {
-          if (index < options.limit) {
+        _.range(this.options.batchSize).forEach((i) => {
+          if (index < this.options.limit) {
             queue.push(this.productDictionary[index]);
             index += 1;
           }
@@ -194,10 +202,10 @@ class UnobtaniumCrawler {
 
         this.logger.debug(
           "start() - addToQueue() - added: ",
-          options.batchSize
+          this.options.batchSize
         );
 
-        setTimeout(startExecution, options.throttle * 1000);
+        setTimeout(startExecution, this.options.throttle * 1000);
       };
 
       const startExecution = () => {
@@ -218,7 +226,7 @@ class UnobtaniumCrawler {
             );
             queue.pop();
             parsed += 1;
-            if (parsed >= options.limit) return stopExecution();
+            if (parsed >= this.options.limit) return stopExecution();
 
             promises.push(item.parse());
           }

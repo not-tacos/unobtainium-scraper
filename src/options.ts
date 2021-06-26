@@ -1,6 +1,7 @@
 import { LogLevel } from "./logger";
 
 export type CrawlerOptions = {
+  countries?: string[];
   logLevel?: LogLevel;
   logDir?: string;
   batchSize?: number;

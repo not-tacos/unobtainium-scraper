@@ -112,9 +112,14 @@ class UnobtaniumCrawler {
         "info"
       ),
       logDir: _options.logDir || process.env.CRAWLER_LOG_DIR || null,
-      batchSize: _options.batchSize || _options.limit || 10,
+      batchSize:
+        _options.batchSize ||
+        parseInt(process.env.CRAWLER_BATCH_SIZE) ||
+        _options.limit ||
+        10,
       limit: _options.limit || this.productDictionary.length,
-      throttle: _options.throttle || 5,
+      throttle:
+        _options.throttle || parseInt(process.env.CRAWLER_THROTTLE) || 5,
       logHtml: !!process.env.CRAWLER_LOG_HTML || false,
       disableBatchExecution: process.env.DISABLE_BATCH_EXECUTION === "true",
       disableProductList: process.env.DISABLE_PRODUCTLIST === "true",

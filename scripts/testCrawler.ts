@@ -19,20 +19,12 @@ import crawler from "./unobtainiumCrawler";
     try {
       // console.log('Starting Web Scraping Process');
 
-      const options: CrawlerOptions = {
-        batchSize: process.env.CRAWLER_BATCH_SIZE
-          ? parseInt(process.env.CRAWLER_BATCH_SIZE)
-          : 2,
-        throttle: process.env.CRAWLER_THROTTLE
-          ? parseInt(process.env.CRAWLER_THROTTLE)
-          : 5,
-      };
       blackList = await crawler.init(
         "dev",
         "http://localhost:3000/",
         blackList
       );
-      await crawler.startWithOptions(options);
+      await crawler.startWithOptions({});
 
       // console.log('Process finished, restarting..');
       return start();

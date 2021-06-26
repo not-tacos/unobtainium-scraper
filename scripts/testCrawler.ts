@@ -7,11 +7,12 @@ const _ = require("dotenv").config();
 let blackList = [];
 startApi(3000);
 
+import crawler from "./unobtainiumCrawler";
+
 (async () => {
   const start = async () => {
     try {
       // console.log('Starting Web Scraping Process');
-      const crawler = require("./unobtainiumCrawler");
 
       const options = {
         batchSize: process.env.CRAWLER_BATCH_SIZE || 2,

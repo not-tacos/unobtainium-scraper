@@ -1,6 +1,7 @@
 import got from "got";
 import { CrawlerBlacklist } from "./blacklist";
 import { Logger } from "./logger";
+import { CrawlerOptions } from "./options";
 
 import { uuidv4 } from "./util";
 
@@ -15,11 +16,14 @@ type ScraperError = {
   hostname: string;
 };
 
-export type ApiProduct = {
+export type Product = {
   country: string;
   productName: string;
   price: number;
   url: string;
+};
+
+export type ApiProduct = Product & {
   lastUpdated: string;
 };
 
@@ -35,23 +39,21 @@ export class ApiClient {
   private guid: string;
 
   constructor(
-    private apiUrl: string,
+    public apiUrl: string,
     private logger: Logger,
-    private runOptions,
-    private crawler_version,
+    private runOptions: CrawlerOptions,
+    private crawler_version: number,
     private blacklist: CrawlerBlacklist
   ) {
     this.guid = uuidv4();
   }
 
-  /**
-   * retrive the product list from the server
-   * @return JSON list of Products
-   */
-  retrieveProductList = async () =>
+  retrieveProductList = async (): Promise<Product[]> =>
     JSON.parse((await got(this.apiUrl + "public/productList.json")).body);
+
   retrieveNewProductList = async (): Promise<ApiProduct[]> =>
     JSON.parse((await got(this.apiUrl + "api/Sites/getProductList")).body);
+
   retrieveBatchList = async (): Promise<ApiBatchProduct[]> =>
     JSON.parse((await got(this.apiUrl + "api/Sites/getBatchList")).body);
 
@@ -82,7 +84,7 @@ export class ApiClient {
     success: boolean = false,
     html: string
   ) => {
-    parsedResults.version = this.crawler_version;
+    parsedResults.version = `${this.crawler_version}`;
 
     try {
       if (success && parsedResults.siteName)

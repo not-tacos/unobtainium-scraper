@@ -1,6 +1,7 @@
 "use strict";
 
 import { startApi } from "../src/local-backend-proxy";
+import { CrawlerOptions } from "../src/options";
 
 const _ = require("dotenv").config();
 
@@ -9,14 +10,22 @@ startApi(3000);
 
 import crawler from "./unobtainiumCrawler";
 
+/**
+ * This aims to use the cralwer code the same way as
+ * https://github.com/BCDel89/unobtainium-nodejs-scraper
+ */
 (async () => {
   const start = async () => {
     try {
       // console.log('Starting Web Scraping Process');
 
-      const options = {
-        batchSize: process.env.CRAWLER_BATCH_SIZE || 2,
-        throttle: process.env.CRAWLER_THROTTLE || 5,
+      const options: CrawlerOptions = {
+        batchSize: process.env.CRAWLER_BATCH_SIZE
+          ? parseInt(process.env.CRAWLER_BATCH_SIZE)
+          : 2,
+        throttle: process.env.CRAWLER_THROTTLE
+          ? parseInt(process.env.CRAWLER_THROTTLE)
+          : 5,
       };
       blackList = await crawler.init(
         "dev",

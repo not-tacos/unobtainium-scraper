@@ -1,4 +1,4 @@
-import { createLogger } from "bunyan";
+import { createLogger, LogLevel } from "bunyan";
 import _ from "lodash";
 
 export { LogLevel } from "bunyan";
@@ -33,3 +33,22 @@ export const createUnobtaniumLogger = () =>
     hostname: "xxx",
     streams: [{ stream: process.stdout, level: "info" }],
   });
+
+export type BunyanLogger = ReturnType<typeof createUnobtaniumLogger>;
+
+export function isLogLevel(input: string | number): input is LogLevel {
+  return (
+    typeof input === "number" ||
+    ["trace", "debug", "info", "warn", "error", "fatal"].includes(input)
+  );
+}
+
+export function logLevelOr(
+  input: string | number,
+  defaultLevel: LogLevel
+): LogLevel {
+  if (isLogLevel(input)) {
+    return input;
+  }
+  return defaultLevel;
+}

@@ -6,11 +6,13 @@ This repo contains the scraper code for the Unobtainium project stock alert bot.
 
 ## File Structure
 
-scripts/ is where development work happens.
+src/ is where development work happens.
 
-    	unobtainiumCrawler.js
+There are a few main entry points:
 
-    		contains most of the code you'll be interested in.
+- `unobtanium-crawler.ts` - the default export is meant to be consumed by an [external project](https://github.com/BCDel89/unobtainium-nodejs-scraper). (todo: single-file bundled build)
+- `test-crawler.ts` - this sets up a few local express endpoints and runs the crawler. It consumes `unobtanium-crawler.ts` above.
+- `cli.ts` - exposes various operations behind a command-line interface
 
 ## Getting Started
 
@@ -62,7 +64,7 @@ Options
   -h, --help             Prints this usage guide
   --summarize-lists      Summarizes current product lists.
   --summarize-batches    Summarizes current product batch lists.
-  --crawl-once           Starts the crawler. (pipe its output through bunyan)
+  --crawl                Starts the crawler. (pipe its output through bunyan)
 
 ```
 

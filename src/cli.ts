@@ -1,5 +1,5 @@
 import { parse } from "ts-command-line-args";
-import { crawlOnce } from "./cli-operations/crawl-once";
+import { crawl } from "./cli-operations/crawl";
 
 import { summarizeBatches } from "./cli-operations/summarize-batches";
 import { summarizeLists } from "./cli-operations/summarize-lists";
@@ -22,11 +22,12 @@ const args = parse(
       optional: true,
       description: "Summarizes current product batch lists.",
     },
-    "crawl-once": {
+    crawl: {
       type: Boolean,
       optional: true,
       description: "Starts the crawler. (pipe its output through bunyan)",
     },
+    /* todo: expose more CrawlerOptions here */
   },
   {
     helpArg: "help",
@@ -53,8 +54,8 @@ async function go() {
   if (args["summarize-batches"]) {
     await summarizeBatches();
   }
-  if (args["crawl-once"]) {
-    await crawlOnce();
+  if (args.crawl) {
+    await crawl();
   }
 }
 

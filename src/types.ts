@@ -1,3 +1,1 @@
-export type Product = {
-  country: string;
-};
+export { Product } from "./api-client";

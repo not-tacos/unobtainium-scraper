@@ -1,12 +1,15 @@
 import { LogLevel } from "./logger";
 
 export type CrawlerOptions = {
+  countries?: string[];
   logLevel?: LogLevel;
   logDir?: string;
   batchSize?: number;
   limit?: number;
   throttle?: number;
   logHtml?: boolean;
+  disableBatchExecution?: boolean;
+  disableProductList?: boolean;
 };
 
 export function getCountries() {

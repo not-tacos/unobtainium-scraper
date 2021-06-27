@@ -1,7 +1,7 @@
 "use strict";
 import express from "express";
 
-export function startApi(port: number) {
+export function startLocalApi(port: number) {
   const app = express();
   app.get("/api/Sites/getProductList", async (req, res) =>
     res.redirect(301, "https://unobtainium.app/api/Sites/getProductList")

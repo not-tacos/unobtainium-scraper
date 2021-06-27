@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch-build": "tsc -w",
     "test": "jest",
-    "test:crawler:local": "node dist/scripts/testCrawler.js | bunyan",
+    "test:crawler:local": "node dist/src/test-crawler.js | bunyan",
     "start": "npm run test:crawler:local",
     "cli": "node dist/src/cli.js"
   },

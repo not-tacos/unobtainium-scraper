@@ -2,22 +2,18 @@
 const CRAWLER_VERSION = 1;
 
 import _ from "lodash";
-import { ApiBatchProduct, ApiClient, ApiProduct } from "../src/api-client";
-import { buildBatchParser } from "../src/batch-parser";
+import { ApiBatchProduct, ApiClient, ApiProduct } from "./api-client";
+import { buildBatchParser } from "./batch-parser";
 import {
   BlackListItem,
   CrawlerBlacklist,
   createCrawlerBlackList,
-} from "../src/blacklist";
-import { CrawlClient } from "../src/crawl-client";
-import { FileWriter } from "../src/file-writer";
-import {
-  BunyanLogger,
-  createUnobtaniumLogger,
-  logLevelOr,
-} from "../src/logger";
-import { CrawlerOptions, getCountries } from "../src/options";
-import { buildParser } from "../src/product-parser";
+} from "./blacklist";
+import { CrawlClient } from "./crawl-client";
+import { FileWriter } from "./file-writer";
+import { BunyanLogger, createUnobtaniumLogger, logLevelOr } from "./logger";
+import { CrawlerOptions, getCountries } from "./options";
+import { buildParser } from "./product-parser";
 import { batchHostTimeouts } from "./sites";
 
 class UnobtaniumCrawler {
@@ -373,6 +369,10 @@ class UnobtaniumCrawler {
 
 let theCrawler = null;
 
+/**
+ * This interface is consumed by this project:
+ * https://github.com/BCDel89/unobtainium-nodejs-scraper
+ */
 export default {
   async init(env: string, apiUrl: string, blackList: BlackListItem[][]) {
     theCrawler = new UnobtaniumCrawler(env, apiUrl);

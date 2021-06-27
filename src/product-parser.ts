@@ -1,4 +1,4 @@
-import { HostTimeouts, userAgentDictionary } from "../scripts/sites";
+import { HostTimeouts, userAgentDictionary } from "./sites";
 import { parseProductIsInStock } from "./is-in-stock";
 import { parseProductIsThirdParty } from "./is-third-party";
 import { parseProductPrice } from "./site-price";

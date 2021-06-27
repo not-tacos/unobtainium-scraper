@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { HostTimeouts, userAgentDictionary } from "../scripts/sites";
+import { HostTimeouts, userAgentDictionary } from "./sites";
 import { parseBatchProductIsInStock } from "./batch-in-stock";
 import { parseBatchProductPrice } from "./batch-price";
 
@@ -127,20 +127,13 @@ export const buildBatchParser = (
             renderTime,
           };
 
-          const productStr =
-            "BatchParser() [ " +
-            productName.padEnd(9) +
-            " ][ " +
-            hostname.padEnd(16) +
-            " ][ " +
-            (stock ? "-=STOCK=-" : "no stock") +
-            " ][ " +
-            (price != -1 ? price.toString().padEnd(8) : "No Price") +
-            " ][ " +
-            (url ? url.padEnd(200) : "n/a") +
-            " ][ " +
-            (batch.batchUrl ? batch.batchUrl.padEnd(200) : "n/a") +
-            " ]";
+          const productStr = `BatchParser() [ ${productName.padEnd(
+            9
+          )} ][ ${hostname.padEnd(16)} ][ ${
+            stock ? "-=STOCK=-" : "no stock"
+          } ][ ${price != -1 ? price.toString().padEnd(8) : "No Price"} ][ ${
+            url ? url.padEnd(120) : "n/a"
+          } ][ ${batch.batchUrl ? batch.batchUrl.padEnd(120) : "n/a"} ]`;
 
           logger.info(productStr);
 

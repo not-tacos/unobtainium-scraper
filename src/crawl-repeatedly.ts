@@ -1,30 +1,23 @@
-"use strict";
+import crawler from "./unobtainium-crawler";
 
-import { startApi } from "../src/local-backend-proxy";
-import { CrawlerOptions } from "../src/options";
-
-const _ = require("dotenv").config();
+import { CrawlerOptions } from "./options";
 
 let blackList = [];
-startApi(3000);
-
-import crawler from "./unobtainiumCrawler";
 
 /**
  * This aims to use the cralwer code the same way as
  * https://github.com/BCDel89/unobtainium-nodejs-scraper
  */
-(async () => {
+export function crawlRepeatedly(
+  env: string,
+  apiUrl: string,
+  options: CrawlerOptions
+) {
   const start = async () => {
     try {
       // console.log('Starting Web Scraping Process');
-
-      blackList = await crawler.init(
-        "dev",
-        "http://localhost:3000/",
-        blackList
-      );
-      await crawler.startWithOptions({});
+      blackList = await crawler.init(env, apiUrl, blackList);
+      await crawler.startWithOptions(options);
 
       // console.log('Process finished, restarting..');
       return start();
@@ -35,4 +28,4 @@ import crawler from "./unobtainiumCrawler";
   };
 
   return setTimeout(start);
-})();
+}
